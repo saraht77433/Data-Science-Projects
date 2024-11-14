@@ -1,1 +1,98 @@
-<h1>Hello World!</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Mom!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffecf1;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+            color: #333;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #ff6347;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 20px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .balloon {
+            width: 80px;
+            height: 120px;
+            background-color: #ff6347;
+            border-radius: 50%;
+            position: absolute;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+            100% { transform: translateY(0); }
+        }
+
+        .balloon1 {
+            left: 30%;
+            animation-delay: 0s;
+        }
+
+        .balloon2 {
+            left: 50%;
+            animation-delay: 1s;
+        }
+
+        .balloon3 {
+            left: 70%;
+            animation-delay: 2s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Music -->
+    <audio autoplay loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="card">
+        <h1>Happy Birthday, Mom!</h1>
+        <p>Thought this would be a pretty cool way to send you a Happy Birthday wish!!! Wishing you a day full of joy, laughter, and wonderful memories! 🎉🎂</p>
+    </div>
+
+    <!-- Balloons for fun decoration -->
+    <div class="balloon balloon1"></div>
+    <div class="balloon balloon2"></div>
+    <div class="balloon balloon3"></div>
+
+    <script>
+        // JavaScript for dynamic name personalization
+        let name = "Sarah";  // Default name
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('name')) {
+            name = urlParams.get('name');  // Fetch the name from the URL query parameter
+        }
+
+        // Change the greeting dynamically
+        document.querySelector('h1').textContent = `Happy Birthday, ${Mom}!`;
+    </script>
+</body>
+</html>
