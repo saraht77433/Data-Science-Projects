@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday!</title>
+    <title>Happy Birthday Mom!</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -47,13 +47,12 @@
     <!-- Background Music -->
     <audio autoplay loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
     </audio>
 
     <!-- Birthday Greeting Card -->
     <div class="card">
-        <h1>Happy Birthday, Mom!</h1>
-        <p>Wishing you a day full of joy, laughter, and wonderful memories! 🎉🎂</p>
+        <h1></h1>  <!-- Empty initial content, we'll fill it with JS -->
+        <p>Thought this would be a pretty cool way to send you a Happy Birthday wish. Wishing you a day full of joy, laughter, and wonderful memories! 🎉🎂</p>
         
         <!-- Image (Birthday Photo) -->
         <img src="https://raw.githubusercontent.com/saraht77433/Data-Science-Projects/main/Mom%20and%20Sarah%202024.JPG" alt="Birthday Image">
@@ -61,7 +60,7 @@
 
     <script>
         // JavaScript for dynamic name personalization
-        let name = "Friend";  // Default name
+        let name = "Mom";  // Default name
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('name')) {
             name = urlParams.get('name');  // Fetch the name from the URL query parameter
