@@ -7,11 +7,11 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #ffecf1;
+            background-color: #e0bbf3;  /* Purple background */
             text-align: center;
             padding: 50px;
             margin: 0;
-            color: #333;
+            color: #4b0082;  /* Dark purple text */
         }
 
         .card {
@@ -25,67 +25,43 @@
 
         h1 {
             font-size: 48px;
-            color: #ff6347;
+            color: #800080;  /* Purple heading */
             margin-bottom: 20px;
         }
 
         p {
             font-size: 20px;
-            color: #555;
+            color: #6a1e9c;  /* Lighter purple text */
             line-height: 1.5;
         }
 
-        .balloon {
-            width: 80px;
-            height: 120px;
-            background-color: #ff6347;
-            border-radius: 50%;
-            position: absolute;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
-            100% { transform: translateY(0); }
-        }
-
-        .balloon1 {
-            left: 30%;
-            animation-delay: 0s;
-        }
-
-        .balloon2 {
-            left: 50%;
-            animation-delay: 1s;
-        }
-
-        .balloon3 {
-            left: 70%;
-            animation-delay: 2s;
+        img {
+            width: 80%;  /* Responsive image size */
+            max-width: 400px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+
     <!-- Background Music -->
     <audio autoplay loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
         Your browser does not support the audio element.
     </audio>
 
+    <!-- Birthday Greeting Card -->
     <div class="card">
-        <h1>Happy Birthday, Mom!</h1>
-        <p>Thought this would be a pretty cool way to send you a Happy Birthday wish!!! Wishing you a day full of joy, laughter, and wonderful memories! 🎉🎂</p>
+        <h1>Happy Birthday, [Mom]!</h1>
+        <p>Wishing you a day full of joy, laughter, and wonderful memories! 🎉🎂</p>
+        
+        <!-- Image (Birthday Photo) -->
+        <img src="https://raw.githubusercontent.com/saraht77433/Data-Science-Projects/main/Mom%20and%20Sarah%202024.JPG" alt="Birthday Image">
     </div>
-
-    <!-- Balloons for fun decoration -->
-    <div class="balloon balloon1"></div>
-    <div class="balloon balloon2"></div>
-    <div class="balloon balloon3"></div>
 
     <script>
         // JavaScript for dynamic name personalization
-        let name = "Sarah";  // Default name
+        let name = "Friend";  // Default name
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('name')) {
             name = urlParams.get('name');  // Fetch the name from the URL query parameter
