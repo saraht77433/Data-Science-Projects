@@ -1,0 +1,174 @@
+---
+title: "Week 5 & 6 Exercise"
+author: "Sarah Theriot"
+date: "2025-04-18"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(treemapify)
+library(ggthemes)
+library(scales)
+library(lubridate)
+library(forcats)
+```
+
+# Load Datasets
+
+```{r datasets}
+# CSVs
+kia_hyundai_thefts <- read_csv("C:/Users/sarah/OneDrive/Desktop/MSDS/Data Presentations/Week 5 and 6/kiaHyundaiThefts.csv")
+car_thefts_map <- read_csv("C:/Users/sarah/OneDrive/Desktop/MSDS/Data Presentations/Week 5 and 6/carTheftsMap.csv")
+milwaukee_data <- read_csv("C:/Users/sarah/OneDrive/Desktop/MSDS/Data Presentations/Week 5 and 6/KiaHyundaiMilwaukeeData.csv")
+
+# Excel
+motherboard_data <- read_excel("C:/Users/sarah/OneDrive/Desktop/MSDS/Data Presentations/Week 5 and 6/Motherboard VICE News Kia Hyundai Theft Data.xlsx")
+```
+
+# Visualizations
+
+## Visualization 1: Stacked Bar — Kia/Hyundai vs Other Thefts in Milwaukee
+
+```{r visual 1}
+milwaukee_bar <- milwaukee_data %>%
+  mutate(Month = paste(month, year)) %>%
+  pivot_longer(cols = c(countKiaHyundaiThefts, countOtherThefts),
+               names_to = "VehicleType", values_to = "Count")
+
+ggplot(milwaukee_bar, aes(x = Month, y = Count, fill = VehicleType)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Kia/Hyundai vs Other Thefts in Milwaukee", x = "Month", y = "Thefts") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank()) +
+  scale_fill_manual(values = c("firebrick", "steelblue"))
+```
+
+## Visualization 2: Area Chart — Kia/Hyundai Trend in Milwaukee
+
+```{r visual 2}
+milwaukee_data <- milwaukee_data %>%
+  mutate(date = as.Date(paste(year, month, "01", sep = "-"), "%Y-%B-%d"))
+
+ggplot(milwaukee_data, aes(x = date, y = countKiaHyundaiThefts)) +
+  geom_area(fill = "firebrick", alpha = 0.7) +
+  labs(title = "Kia/Hyundai Theft Trend in Milwaukee", x = "Date", y = "Thefts") +
+  theme_minimal()
+```
+
+## Visualization 3: Tidy Dataset
+
+```{r tidy-motherboard-data, message=FALSE, warning=FALSE}
+# Load the readxl package (already done earlier)
+library(readxl)
+library(tidyverse)
+
+# Step 1: Read in the raw Excel file
+motherboard_raw <- read_excel("C:/Users/sarah/OneDrive/Desktop/MSDS/Data Presentations/Week 5 and 6/Motherboard VICE News Kia Hyundai Theft Data.xlsx")
+
+# Step 2: Rename the first column to "Model"
+colnames(motherboard_raw)[1] <- "Model"
+
+# Step 3: Convert all non-Model columns to character to avoid type conflicts
+motherboard_raw[, -1] <- lapply(motherboard_raw[, -1], as.character)
+
+# Step 4: Pivot longer to tidy format
+motherboard_tidy <- motherboard_raw %>%
+  pivot_longer(cols = -Model, names_to = "Category", values_to = "Thefts") %>%
+  filter(!is.na(Model), !is.na(Thefts)) %>%
+  mutate(Thefts = as.numeric(Thefts))
+
+# Peek at the cleaned data
+glimpse(motherboard_tidy)
+```
+
+## Visualization 3: A Donut Chart of Popular Models
+```{r visual 3}
+# Count how many entries each model has across all years/categories
+top_models <- motherboard_tidy %>%
+  count(Model, sort = TRUE) %>%
+  filter(n > 20)
+
+# Donut chart
+ggplot(top_models, aes(x = 2, y = n, fill = Model)) +
+  geom_col(width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  xlim(0.5, 2.5) +
+  theme_void() +
+  theme(legend.position = "right") +
+  labs(title = "Most Frequently Stolen Kia/Hyundai Models (Based on Entries)") +
+  guides(fill = guide_legend(title = "Model"))
+```
+
+## Visualization 4: Stacked Bar Chart - Total Vehicle Thefts by State
+
+```{r visual 4}
+library(tidyverse)
+
+# Clean and summarize the data
+state_theft_summary <- kia_hyundai_thefts %>%
+  filter(!is.na(state)) %>%
+  group_by(state) %>%
+  summarise(
+    KiaHyundai = sum(countKiaHyundaiThefts, na.rm = TRUE),
+    Other = sum(countOtherThefts, na.rm = TRUE)
+  ) %>%
+  pivot_longer(cols = c(KiaHyundai, Other), names_to = "Make", values_to = "Thefts")
+
+# Plot the stacked bar chart
+ggplot(state_theft_summary, aes(x = reorder(state, -Thefts), y = Thefts, fill = Make)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Total Vehicle Thefts by State",
+    subtitle = "Comparing Kia/Hyundai to Other Vehicles",
+    x = "State",
+    y = "Total Thefts",
+    fill = "Vehicle Make"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Visualization 5: Pie Chart — Theft Share by City
+
+```{r visual 5}
+pie_data <- car_thefts_map %>%
+  arrange(desc(countCarThefts2022)) %>%
+  slice_max(order_by = countCarThefts2022, n = 10)
+
+ggplot(pie_data, aes(x = "", y = countCarThefts2022, fill = geo_name)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  theme_void() +
+  labs(title = "Top 10 Cities for Thefts in 2022") +
+  theme(legend.position = "right")
+```
+
+## Visualization 6: Line Chart — Kia/Hyundai Thefts by City Over Time
+
+```{r visual 6}
+kia_hyundai_thefts <- kia_hyundai_thefts %>%
+  mutate(date = as.Date(paste(year, month, "01", sep = "-"), "%Y-%B-%d"))
+
+ggplot(kia_hyundai_thefts, aes(x = date, y = countKiaHyundaiThefts, color = city)) +
+  geom_line() +
+  labs(title = "Kia/Hyundai Theft Trends by City",
+       x = "Date", y = "Thefts", color = "City") +
+  theme_minimal()
+```
+  
+# Summary
+## In the past few years, thefts of Kia and Hyundai vehicles have skyrocketed across the U.S., especially in certain cities like Milwaukee and Chicago. This infographic dives into that trend, showing when, where, and how this wave of car thefts happened. The goal is to break it down in a way that’s clear, easy to follow, and actually useful — whether you're a driver, a policymaker, or just someone who’s curious about what’s going on.
+
+## We start by looking at Milwaukee, one of the hardest-hit cities. A stacked bar chart shows how Kia and Hyundai thefts grew from being a small slice of all car thefts to making up the majority in just a couple of years. Then, an area chart lets you zoom in on that spike, month by month. You can literally see the moment things got out of control.
+
+## Next up is a donut chart that highlights the most commonly stolen models. This gives insight into which vehicles are being targeted the most — not just the brands, but specific cars. It’s useful info for owners or anyone thinking about buying one.
+
+## From there, we zoom out and take a look at total vehicle thefts by state. It helps put the Kia/Hyundai issue in context and shows how different states are experiencing this problem in different ways. A pie chart follows that, breaking down where these thefts are concentrated by city — a few places account for a big chunk of the cases. 
+## Finally, we wrap it up with a line chart showing how thefts of these brands have played out over time in different cities. It’s not the same everywhere — some cities had early spikes, others saw slower rises.
+
+## Throughout the design, I kept things clean and easy to read. The colors are sharp but not overwhelming, and each chart is labeled clearly. Ethically, I made sure not to lean into fear or finger-pointing. The goal is awareness, not panic. No private info was used — all data is public and anonymous.
+
+## Overall, this project was about turning raw numbers into something visual and meaningful. The Kia/Hyundai theft wave isn’t just a headline — it’s a real issue that’s playing out differently across the country, and understanding it is the first step to dealing with it.
